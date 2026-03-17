@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>semantic layout lab · grid + fixed sidebar</title>
+  <style>
+    /* ----- base & reset (light, airy, semantic-friendly) ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #f4f7fb;
+      color: #1e293b;
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    /* main container – uses both grid and flex to demonstrate both layouts */
+    .demo-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    /* ----- section headers (semantic <header> inside sections) ----- */
+    .section-header {
+      margin-bottom: 1.5rem;
+      border-left: 6px solid #2563eb;
+      padding-left: 1.2rem;
+    }
+    .section-header h2 {
+      font-weight: 600;
+      font-size: 2rem;
+      letter-spacing: -0.01em;
+      color: #0f172a;
+    }
+    .section-header p {
+      color: #475569;
+      margin-top: 0.25rem;
+      font-size: 1.1rem;
+    }
+
+    /* ----- LAYOUT 1 : CSS GRID (card grid with semantic zones) ----- */
+    .grid-layout-section {
+      background: white;
+      border-radius: 2rem;
+      padding: 2rem 2rem 2.5rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+    }
+
+    /* main grid: header + article grid + footer */
+    .grid-page {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 2rem;
+    }
+
+    /* grid header (semantic <header>) */
+    .grid-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: #f8fafc;
+      padding: 1rem 2rem;
+      border-radius: 60px;
+      border: 1px solid #e2e8f0;
+    }
+    .logo-area {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: #1e293b;
+      color: white;
+      padding: 0.3rem 1.2rem;
+      border-radius: 40px;
+    }
+    .grid-nav a {
+      margin-left: 2rem;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      transition: color 0.1s;
+    }
+    .grid-nav a:hover { color: #2563eb; }
+
+    /* article grid — the actual grid-based card layout */
+    .article-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    /* semantic <article> cards */
+    .card {
+      background: #ffffff;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+      border: 1px solid #e9eef3;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -8px rgba(0, 80, 200, 0.15);
+      border-color: #b9d3f0;
+    }
+
+    .card header {
+      margin-bottom: 1rem;
+    }
+    .card header h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #0c4a6e;
+    }
+    .card header .meta {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-top: 0.2rem;
+    }
+    .card p {
+      color: #334155;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+    .card footer {
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 1rem;
+      font-size: 0.9rem;
+      color: #475569;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* grid footer */
+    .grid-footer {
+      background: #f1f5f9;
+      border-radius: 40px;
+      padding: 1.2rem 2rem;
+      text-align: center;
+      color: #334155;
+      border: 1px solid #d9e2ef;
+      font-size: 0.95rem;
+    }
+
+    /* ----- LAYOUT 2 : FIXED SIDEBAR (flex + sticky) ----- */
+    .fixed-sidebar-section {
+      background: #ffffff;
+      border-radius: 2rem;
+      padding: 2rem 2rem 2.5rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+    }
+
+    /* outer container: sidebar + main content with sticky behavior */
+    .sidebar-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem;
+      position: relative;
+    }
+
+    /* --- fixed (sticky) sidebar — stays put while scrolling --- */
+    .fixed-sidebar {
+      flex: 0 0 280px;
+      background: linear-gradient(145deg, #f0f4fa, #ffffff);
+      border-radius: 2rem;
+      padding: 2rem 1.5rem;
+      border: 1px solid #dee7f2;
+      box-shadow: 8px 8px 20px rgba(0,0,0,0.02);
+      position: sticky;
+      top: 2rem;          /* stays fixed 2rem from top when scrolling */
+      align-self: flex-start;
+      height: fit-content;
+    }
+
+    /* sidebar semantic elements */
+    .fixed-sidebar header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #0b3b5c;
+      margin-bottom: 1.8rem;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 0.75rem;
+    }
+
+    .fixed-sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .fixed-sidebar nav a {
+      background: #f1f5f9;
+      padding: 0.8rem 1.2rem;
+      border-radius: 60px;
+      text-decoration: none;
+      color: #1f3a5f;
+      font-weight: 500;
+      transition: 0.15s;
+      border: 1px solid transparent;
+    }
+    .fixed-sidebar nav a:hover {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .sidebar-widget {
+      background: #eaf3ff;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .sidebar-widget h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      color: #0f2b45;
+    }
+    .sidebar-widget p {
+      color: #2d3c53;
+    }
+
+    .fixed-sidebar footer {
+      font-size: 0.9rem;
+      color: #5d6f88;
+      border-top: 1px dashed #bac8dc;
+      padding-top: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    /* --- main content area beside fixed sidebar (semantic <main>) --- */
+    .sidebar-main {
+      flex: 1;
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 2rem;
+      border: 1px solid #e2eaf5;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* main header inside the main area */
+    .main-article header {
+      margin-bottom: 0.5rem;
+    }
+    .main-article header h3 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #163a5f;
+    }
+    .main-article .byline {
+      color: #52718e;
+      font-style: italic;
+      margin-top: 0.1rem;
+    }
+    .main-article p {
+      color: #1e374b;
+      font-size: 1.1rem;
+      margin: 1.2rem 0 1.8rem;
+    }
+
+    /* inline image / figure example */
+    figure {
+      margin: 1.5rem 0 1rem;
+    }
+    figure img {
+      max-width: 100%;
+      border-radius: 24px;
+      border: 1px solid #d0e0f0;
+      background: #eef4fa;
+      padding: 0.5rem;
+    }
+    figcaption {
+      text-align: center;
+      color: #4b6589;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    /* secondary content grid inside main (still respects fixed sidebar) */
+    .secondary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .secondary-grid article {
+      background: #ffffff;
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      border: 1px solid #e2e8f0;
+    }
+    .secondary-grid article h4 {
+      font-size: 1.2rem;
+      color: #1c4e7c;
+      margin-bottom: 0.6rem;
+    }
+    .secondary-grid footer {
+      margin-top: 0.8rem;
+      color: #5f7d9c;
+      font-size: 0.85rem;
+    }
+
+    /* generic footer for the whole demo */
+    .demo-footer {
+      text-align: center;
+      margin-top: 1rem;
+      color: #5f6f88;
+      border-top: 2px solid #dce7f5;
+      padding-top: 2rem;
+      font-size: 0.95rem;
+    }
+
+    /* responsive: on narrow screens, sidebar becomes block (non-fixed) */
+    @media (max-width: 850px) {
+      .sidebar-layout {
+        flex-direction: column;
+      }
+      .fixed-sidebar {
+        position: static;    /* disable sticky on mobile */
+        width: 100%;
+        flex: auto;
+      }
+      body { padding: 1rem; }
+    }
+
+    /* small touches */
+    .badge {
+      background: #dbeafe;
+      color: #1e4a8b;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+
+    <!-- SECTION 1: GRID-BASED template (semantic tags everywhere) -->
+    <section class="grid-layout-section">
+      <header class="section-header">
+        <h2>📐 Grid‑based template</h2>
+        <p>Semantic <code>&lt;header&gt;</code>, <code>&lt;article&gt;</code> grid, <code>&lt;footer&gt;</code> — responsive auto‑fill</p>
+      </header>
+
+      <!-- grid page simulation (complete with header, main grid, footer) -->
+      <div class="grid-page">
+        <!-- semantic header with navigation -->
+        <header class="grid-header">
+          <div class="logo-area">📦 GridLib</div>
+          <nav class="grid-nav">
+            <a href="#">articles</a>
+            <a href="#">grid</a>
+            <a href="#">design</a>
+            <a href="#">semantic</a>
+          </nav>
+        </header>
+
+        <!-- grid of <article> cards — main grid content -->
+        <div class="article-grid">
+          <article class="card">
+            <header>
+              <h3>CSS Grid news</h3>
+              <div class="meta">12 min ago · layout</div>
+            </header>
+            <p>Subgrid, masonry, and container queries – the future of semantic layouts is grid.</p>
+            <footer><span>📚 5 min read</span> <span class="badge">advanced</span></footer>
+          </article>
+
+          <article class="card">
+            <header>
+              <h3>Semantic HTML</h3>
+              <div class="meta">yesterday · best practices</div>
+            </header>
+            <p>Using <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code> and <code>&lt;nav&gt;</code> gives structure without extra classes.</p>
+            <footer><span>👥 134 shares</span> <span class="badge">basics</span></footer>
+          </article>
+
+          <article class="card">
+            <header>
+              <h3>Auto‑fill grid</h3>
+              <div class="meta">3d ago · responsive</div>
+            </header>
+            <p><code>grid-template-columns: repeat(auto-fill, minmax(280px,1fr))</code> creates resilient cards.</p>
+            <footer><span>⚡ demo</span> <span class="badge">code</span></footer>
+          </article>
+
+          <article class="card">
+            <header>
+              <h3>Card footer</h3>
+              <div class="meta">design · 1h ago</div>
+            </header>
+            <p>Each article has its own <code>&lt;footer&gt;</code> – perfect for metadata, likes, tags.</p>
+            <footer><span>❤️ 89 likes</span> <span class="badge">ui</span></footer>
+          </article>
+
+          <article class="card">
+            <header>
+              <h3>Accessibility first</h3>
+              <div class="meta">a11y · 2d ago</div>
+            </header>
+            <p>Semantic tags improve screen reader flow. Grid ensures visual order matches DOM.</p>
+            <footer><span>🌍 international</span> <span class="badge">a11y</span></footer>
+          </article>
+
+          <article class="card">
+            <header>
+              <h3>Nested semantics</h3>
+              <div class="meta">pattern · 5h ago</div>
+            </header>
+            <p>Headers in cards, footers in cards – everything lives in a meaningful container.</p>
+            <footer><span>🧩 pattern</span> <span class="badge">guide</span></footer>
+          </article>
+        </div>
+
+        <!-- grid footer -->
+        <footer class="grid-footer">
+          <p>✨ <strong>Grid layout footer</strong> — six semantic cards, one unified design. <time datetime="2026-02-23">feb 23, 2026</time></p>
+        </footer>
+      </div>
+    </section>
+
+    <!-- SECTION 2: FIXED SIDEBAR template (sticky aside + semantic main) -->
+    <section class="fixed-sidebar-section">
+      <header class="section-header">
+        <h2>📌 Fixed‑sidebar template</h2>
+        <p>Sticky <code>&lt;aside&gt;</code> (fixed when scrolling) + <code>&lt;main&gt;</code> with nested articles</p>
+      </header>
+
+      <!-- fixed sidebar layout container -->
+      <div class="sidebar-layout">
+        <!-- semantic ASIDE (fixed / sticky sidebar) -->
+        <aside class="fixed-sidebar">
+          <header>
+            <h2>📁 library</h2>
+          </header>
+          <nav>
+            <a href="#">📄 design systems</a>
+            <a href="#">🧩 components</a>
+            <a href="#">⚙️ utilities</a>
+            <a href="#">🎨 color tokens</a>
+            <a href="#">📐 grid tricks</a>
+          </nav>
+
+          <div class="sidebar-widget">
+            <h3>sticky note</h3>
+            <p>This sidebar uses <code>position: sticky; top: 2rem;</code>. It stays fixed while you scroll the main content.</p>
+          </div>
+
+          <footer>
+            <p>📌 fixed sidebar <br> <small>always visible (except on mobile)</small></p>
+          </footer>
+        </aside>
+
+        <!-- semantic MAIN area – scrolls naturally, sidebar sticks -->
+        <main class="sidebar-main">
+          <!-- first major article -->
+          <article class="main-article">
+            <header>
+              <h3>Why fixed sidebars still rock</h3>
+              <div class="byline">by semantic engineer · 23 feb 2026</div>
+            </header>
+            <p>
+              A fixed (sticky) sidebar provides persistent navigation without stealing content space.
+              Using <code>&lt;aside&gt;</code> for complementary info keeps the document outline clean.
+            </p>
+            <!-- simple figure to show semantic variety -->
+            <figure>
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='140' viewBox='0 0 400 140'%3E%3Crect width='400' height='140' fill='%23d4e2f2' rx='16'/%3E%3Ctext x='30' y='70' font-family='system-ui, sans-serif' font-size='16' fill='%231e3b5a'%3E📐 semantic diagram: aside + main%3C/text%3E%3C/svg%3E"
+                   alt="placeholder showing semantic layout">
+              <figcaption>fig 1 — <code>&lt;aside&gt;</code> sticky, <code>&lt;main&gt;</code> scrolls</figcaption>
+            </figure>
+          </article>
+
+          <!-- secondary grid inside main (still semantic articles) -->
+          <div class="secondary-grid">
+            <article>
+              <h4>grid inside main</h4>
+              <p>Even with a fixed sidebar, inner content can be grid-based. This box is an <code>&lt;article&gt;</code>.</p>
+              <footer>📋 entry 1</footer>
+            </article>
+            <article>
+              <h4>semantic nesting</h4>
+              <p>The whole area is <code>&lt;main&gt;</code>, these cards are <code>&lt;article&gt;</code> with footer.</p>
+              <footer>📋 entry 2</footer>
+            </article>
+            <article>
+              <h4>responsive</h4>
+              <p>On narrow screens, the sidebar becomes static (stacked) – try resizing.</p>
+              <footer>📋 entry 3</footer>
+            </article>
+          </div>
+
+          <!-- extra footer-like note inside main (but main can have footer) -->
+          <footer style="border-top: 2px solid #cbdcee; padding-top: 1.5rem; color: #3a5775;">
+            <p><strong>Main footer</strong> — the fixed sidebar remains independent. both use semantic tags.</p>
+          </footer>
+        </main>
+      </div>
+    </section>
+
+    <!-- overall demo footer (semantic) -->
+    <footer class="demo-footer">
+      <p>🚀 Two distinct semantic layouts: <strong>grid-based template</strong> (cards with auto-fill) and <strong>fixed‑sidebar template</strong> (sticky aside). <br> All structural tags: <code>header, nav, main, article, section, aside, figure, footer</code>.</p>
+    </footer>
+  </div>
+</body>
+</html>
